@@ -12,6 +12,7 @@ process.env.DEBUG_PRINT_LIMIT = '15000'
 
 // enable API mocking in test runs using the same request handlers
 // as for the client-side mocking.
+jest.setTimeout(80000);
 beforeAll(() => server.listen())
 afterAll(() => server.close())
 beforeEach(()=>{

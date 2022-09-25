@@ -7,6 +7,8 @@ import SinglePeople from './SinglePeople';
 import Container from '../../common/HOC/withContainer';
 import { VscArrowLeft } from 'react-icons/vsc';
 import Loader from '../../common/components/Loader';
+
+
 export default function PeopleDetails(){
     const { id } = useParams();
     const { data: people, error, isLoading } = useGetSinglePeopleQuery(id);
@@ -16,7 +18,6 @@ export default function PeopleDetails(){
     }
 
     if (!id || error || !people){
-        debugger
         return (<NotFound/>)
     }
 

@@ -1,20 +1,20 @@
 import App from './App';
 import { rest } from 'msw';
 import { server } from './test/server';
-import { screen } from '@testing-library/react'
+import { queryByText, render, screen, waitForElementToBeRemoved } from '@testing-library/react'
 import withProviders from './test/withProviders';
-
+import { BrowserRouter, MemoryRouter } from 'react-router-dom';
+import userEvent from '@testing-library/user-event'
+import { act } from 'react-dom/test-utils';
 
 const makeSut = () => {
   return withProviders(<App />);
 }
-jest.setTimeout(80000);
 
 describe('App', () => {
-  test('Should renders first 10 people', async () => {
-    let { container, getByText } = await makeSut();
-    await screen.findByText(/Star wars/i, undefined, { timeout: 10000 })
-
+  test('Default route Should renders first 10 people', async () => {
+    let { container } = await makeSut();
+    await waitForElementToBeRemoved(() => screen.queryByText(/Loading/i))
 
     expect(container.querySelectorAll("li").length).toBe(1);
   });
@@ -33,7 +33,28 @@ describe('App', () => {
     );
 
     withProviders(<App />)
-    await screen.findByText('404')
+    await waitForElementToBeRemoved(() => screen.queryByText(/Loading/i))
+    expect(screen.getByText(/404/i)).toBeInTheDocument()
+  });
+
+  test('full app rendering/navigating to single people', async () => {
+    let { container } = await makeSut();
+    const user = userEvent.setup()
+    await waitForElementToBeRemoved(() => screen.queryByText(/Loading/i))
+    expect(container.querySelectorAll("li").length).toBe(1);
+
+    await user.click(screen.getByText(/Luke Skywalker/i))
+    await screen.findByText(/Star wars/i, undefined, { timeout: 10000 })
+    expect(screen.getByText(/PEOPLE DETAILS/i)).toBeInTheDocument()
+  });
+
+  test('landing on a invalid page', async () => {
+    const badRoute = '/some/bad/route'
+
+    render(<MemoryRouter initialEntries={[badRoute]}><App /></MemoryRouter>)
+    await waitForElementToBeRemoved(() => screen.queryByText(/Loading/i))
+
+    expect(screen.getByText(/404/i)).toBeInTheDocument()
   })
 })
 
