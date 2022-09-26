@@ -2,25 +2,18 @@ import * as React from 'react'
 import {
     Box,
     Button,
-    Divider,
-    Flex,
-    Heading,
     HStack,
     Icon,
     List,
     ListIcon,
     ListItem,
-    Stat,
-    StatLabel,
-    StatNumber,
 } from '@chakra-ui/react'
 import { MdArrowBack, MdArrowForward, MdFace } from 'react-icons/md'
 import { useListPeopleQuery } from '../../app/services/people'
 import { Link } from 'react-router-dom'
 import PeopleSelekton from './PeopleSelekton'
-import Container from '../../common/HOC/withContainer'
 
-const PeopleList = () => {
+ const PeopleList = () => {
     const [page, setPage] = React.useState(1)
     const { data: people, isLoading, isFetching } = useListPeopleQuery(page)
 
@@ -64,13 +57,4 @@ const PeopleList = () => {
         </Box>
     )
 }
-
-export const PeopleManager = () => {
-    return (
-        <Container>
-            <PeopleList />
-        </Container>
-    )
-}
-
-export default PeopleManager
+export default PeopleList;
